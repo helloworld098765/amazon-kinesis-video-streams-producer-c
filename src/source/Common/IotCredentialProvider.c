@@ -102,7 +102,7 @@ STATUS getIotCredentials(PAwsCredentialProvider pCredentialProvider, PAwsCredent
     PIotCredentialProvider pIotCredentialProvider = (PIotCredentialProvider) pCredentialProvider;
 
     CHK(pIotCredentialProvider != NULL && ppAwsCredentials != NULL, STATUS_NULL_ARG);
-
+    DLOGI("getIotCredentials");
     // Fill the credentials
     CHK_STATUS(iotCurlHandler(pIotCredentialProvider));
 
@@ -118,7 +118,7 @@ STATUS parseIotResponse(PIotCredentialProvider pIotCredentialProvider, PCallInfo
 {
     ENTERS();
     STATUS retStatus = STATUS_SUCCESS;
-
+    DLOGI("Here in parse iot");
     UINT32 i, resultLen, accessKeyIdLen = 0, secretKeyLen = 0, sessionTokenLen = 0, expirationTimestampLen = 0;
     INT32 tokenCount;
     jsmn_parser parser;
