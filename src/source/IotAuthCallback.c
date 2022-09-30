@@ -11,6 +11,9 @@ STATUS createIotAuthCallbacks(PClientCallbacks pCallbacksProvider, PCHAR iotGetC
                               PCHAR caCertPath, PCHAR roleAlias, PCHAR streamName, PAuthCallbacks* ppIotAuthCallbacks)
 {
     ENTERS();
+
+    printf("Here\n");
+
     STATUS retStatus = STATUS_SUCCESS;
 
     PIotAuthCallbacks pIotAuthCallbacks = NULL;
@@ -35,7 +38,6 @@ STATUS createIotAuthCallbacks(PClientCallbacks pCallbacksProvider, PCHAR iotGetC
     pIotAuthCallbacks->authCallbacks.getDeviceCertificateFn = NULL;
     pIotAuthCallbacks->authCallbacks.deviceCertToTokenFn = NULL;
     pIotAuthCallbacks->authCallbacks.getDeviceFingerprintFn = NULL;
-
     CHK_STATUS(createCurlIotCredentialProviderWithTime(iotGetCredentialEndpoint, certPath, privateKeyPath, caCertPath, roleAlias, streamName,
                                                        pIotAuthCallbacks->pCallbacksProvider->clientCallbacks.getCurrentTimeFn,
                                                        pIotAuthCallbacks->pCallbacksProvider->clientCallbacks.customData,
