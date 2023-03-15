@@ -1040,7 +1040,7 @@ STATUS createStreamCachingCurl(UINT64 customData, PCHAR deviceName, PCHAR stream
         CHK(FALSE, retStatus);
     }
 
-    DLOGV("No-op CreateStream API call");
+    DLOGV("[%s] No-op CreateStream API call", streamName);
 
     retStatus = createStreamResultEvent(streamHandle, SERVICE_CALL_RESULT_OK, streamName);
 
@@ -1077,7 +1077,7 @@ PVOID createStreamCurlHandler(PVOID arg)
     pCallbacksProvider = pCurlApiCallbacks->pCallbacksProvider;
     streamArn[0] = '\0';
 
-    DLOGD("createStreamCurlHandler response %p", pCurlRequest->pCurlResponse);
+    DLOGD("[%s] createStreamCurlHandler response %p", pCurlRequest->streamName, pCurlRequest->pCurlResponse);
 
     // Acquire and release the startup lock to ensure the startup sequence is clear
     pCallbacksProvider->clientCallbacks.lockMutexFn(pCallbacksProvider->clientCallbacks.customData, pCurlRequest->startLock);
@@ -1103,7 +1103,7 @@ PVOID createStreamCurlHandler(PVOID arg)
     pResponseStr = pCurlResponse->callInfo.responseData;
     resultLen = pCurlResponse->callInfo.responseDataLen;
 
-    DLOGD("CreateStream API response: %.*s", resultLen, pResponseStr);
+    DLOGD("[%s] CreateStream API response: %.*s", pCurlRequest->streamName, resultLen, pResponseStr);
 
     // Parse the response
     jsmn_init(&parser);
@@ -1288,7 +1288,7 @@ STATUS describeStreamCachingCurl(UINT64 customData, PCHAR streamName, PServiceCa
     streamDescription.streamStatus = STREAM_STATUS_ACTIVE;
     streamDescription.creationTime = pCallbacksProvider->clientCallbacks.getCurrentTimeFn(pCallbacksProvider->clientCallbacks.customData);
 
-    DLOGV("No-op DescribeStream API call");
+    DLOGV("[%s] No-op DescribeStream API call", streamDescription.streamName);
     retStatus = describeStreamResultEvent(streamHandle, SERVICE_CALL_RESULT_OK, &streamDescription);
 
     notifyCallResult(pCallbacksProvider, retStatus, streamHandle);
@@ -1347,7 +1347,7 @@ PVOID describeStreamCurlHandler(PVOID arg)
     pResponseStr = pCurlResponse->callInfo.responseData;
     resultLen = pCurlResponse->callInfo.responseDataLen;
 
-    DLOGD("DescribeStream API response: %.*s", resultLen, pResponseStr);
+    DLOGD("[%s] DescribeStream API response: %.*s", streamDescription.streamName, resultLen, pResponseStr);
 
     // skip json parsing if call result not ok
     CHK(pCurlResponse->callInfo.callResult == SERVICE_CALL_RESULT_OK && resultLen != 0 && pResponseStr != NULL, retStatus);
@@ -1620,7 +1620,7 @@ STATUS getStreamingEndpointCachingCurl(UINT64 customData, PCHAR streamName, PCHA
         CHK(FALSE, retStatus);
     }
 
-    DLOGV("Caching GetStreamingEndpoint API call");
+    DLOGV("[%s] Caching GetStreamingEndpoint API call", streamName);
 
     // At this stage we should be holding the lock
     CHECK(endpointsLocked);
@@ -1687,7 +1687,7 @@ PVOID getStreamingEndpointCurlHandler(PVOID arg)
     pResponseStr = pCurlResponse->callInfo.responseData;
     resultLen = pCurlResponse->callInfo.responseDataLen;
 
-    DLOGD("GetStreamingEndpoint API response: %.*s", resultLen, pResponseStr);
+    DLOGD("[%s] GetStreamingEndpoint API response: %.*s", pCurlRequest->streamName, resultLen, pResponseStr);
 
     // Parse the response
     jsmn_init(&parser);
@@ -2165,9 +2165,9 @@ CleanUp:
 
     if (!requestTerminating) {
         if (!endOfStream) {
-            DLOGW("Stream with streamHandle %" PRIu64 " uploadHandle %" PRIu64
+            DLOGW("[%s] Stream with streamHandle %" PRIu64 " uploadHandle %" PRIu64
                   " has exited without triggering end-of-stream. Service call result: %u",
-                  streamHandle, uploadHandle, callResult);
+                  pCurlRequest->streamName, streamHandle, uploadHandle, callResult);
             kinesisVideoStreamTerminated(streamHandle, uploadHandle, callResult);
         }
 
