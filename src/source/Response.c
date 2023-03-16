@@ -413,7 +413,7 @@ STATUS curlCompleteSync(PCurlResponse pCurlResponse)
         pCurlResponse->callInfo.callResult = SERVICE_CALL_REQUEST_TIMEOUT;
     } else if (result != CURLE_OK) {
         curl_easy_getinfo(pCurlResponse->pCurl, CURLINFO_EFFECTIVE_URL, &url);
-        DLOGW("curl perform failed for url %s with result %s: %s", url, curl_easy_strerror(result), pCurlResponse->callInfo.errorBuffer);
+        DLOGW("[%s] curl perform failed for url %s with result %s: %s", pCurlResponse->pCurlRequest->streamName, url, curl_easy_strerror(result), pCurlResponse->callInfo.errorBuffer);
 
         pCurlResponse->callInfo.callResult = getServiceCallResultFromCurlStatus(result);
     } else {
@@ -431,7 +431,7 @@ STATUS curlCompleteSync(PCurlResponse pCurlResponse)
             STRCAT(headers, header->data);
         }
 
-        DLOGW("HTTP Error %lu : Response: %s\nRequest URL: %s\nRequest Headers:%s", pCurlResponse->callInfo.httpStatus,
+        DLOGW("[%s] HTTP Error %lu : Response: %s\nRequest URL: %s\nRequest Headers:%s", pCurlResponse->pCurlRequest->streamName, pCurlResponse->callInfo.httpStatus,
               pCurlResponse->callInfo.responseData, url, headers);
     }
 

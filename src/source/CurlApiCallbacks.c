@@ -133,7 +133,7 @@ STATUS createCurlApiCallbacks(PCallbacksProvider pCallbacksProvider, PCHAR regio
     CHK_STATUS(initializeSslCallbacks());
 
     // CURL global initialization
-//    CHK(0 == curl_global_init(CURL_GLOBAL_ALL), STATUS_CURL_LIBRARY_INIT_FAILED);
+    CHK(0 == curl_global_init(CURL_GLOBAL_ALL), STATUS_CURL_LIBRARY_INIT_FAILED);
 
     // Not in shutdown
     ATOMIC_STORE_BOOL(&pCurlApiCallbacks->shutdown, FALSE);
@@ -231,7 +231,7 @@ STATUS freeCurlApiCallbacks(PCurlApiCallbacks* ppCurlApiCallbacks)
     }
 
     // Global release of CURL object
-//    curl_global_cleanup();
+    curl_global_cleanup();
 
     // Release the OpenSSL mutexes
     releaseSslCallbacks();
