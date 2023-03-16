@@ -22,7 +22,7 @@ STATUS blockingCurlCall(PRequestInfo pRequestInfo, PCallInfo pCallInfo)
     CHK(pRequestInfo != NULL && pCallInfo != NULL, STATUS_NULL_ARG);
 
     // CURL global initialization
-    CHK(0 == curl_global_init(CURL_GLOBAL_ALL), STATUS_CURL_LIBRARY_INIT_FAILED);
+//    CHK(0 == curl_global_init(CURL_GLOBAL_ALL), STATUS_CURL_LIBRARY_INIT_FAILED);
     curl = curl_easy_init();
     CHK(curl != NULL, STATUS_CURL_INIT_FAILED);
 
